@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+.product-form-layout{
+  display: flex;
+}
+
+.product-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 240px;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.form-card {
+  width: 600px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.form-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 30px 0;
+  color: black;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: black;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid black;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  outline: none;
+  background-color: white;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: #5b4b8a;
+}
+
+/* Untuk dropdown label dengan chevron */
+.dropdown-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.chevron {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Baris untuk Stock & Min stock */
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+.form-input.small {
+  width: 100%;
+  max-width: 150px;
+}
+
+/* Butang submit */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+
+.submit-btn {
+  background-color: #5b4b8a; /* Ungu */
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 12px 50px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}

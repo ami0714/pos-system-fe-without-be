@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+.stock-page-layout{
+    display: flex;
+}
+
+
+.stock-page {
+  width: 100%;
+  padding: 40px;
+  margin-left: 240px;
+ 
+}
+
+/* Tabs */
+.tabs-header {
+  display: flex;
+  gap: 40px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: black;
+  padding: 0;
+}
+
+.tab.active {
+  color: #5b4b8a; /* Warna ungu */
+}
+
+/* Stock In Container */
+.stock-in-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 40px;
+}
+
+.search-row.centered {
+  justify-content: center;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.mode-btn {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid black;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+}
+
+.mode-btn.active {
+  background-color: #5b4b8a;
+  color: white;
+  border-color: #5b4b8a;
+}
+
+/* Form Card */
+.stock-form-card {
+  width: 600px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.display-info {
+  margin-bottom: 30px;
+}
+
+.info-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.info-label {
+  margin-right: 10px;
+}
+
+.info-value {
+  font-weight: 400;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  width: 160px;
+}
+
+.form-input {
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 10px 15px;
+  font-size: 1.2rem;
+  outline: none;
+}
+
+.small-input {
+  width: 150px;
+}
+
+.medium-input {
+  width: 150px;
+}
+
+.long-input {
+  width: 300px;
+}
+
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.save-btn {
+  background-color: #5b4b8a;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 12px 50px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* Movement Log */
+.movement-log-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filters-row {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.filter-label {
+  margin-right: 5px;
+}
+
+.chevron {
+  font-size: 1.5rem;
+}
+
+.date-input {
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 8px 15px;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+}
+
+.dash {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.table-wrapper {
+  width: 100%;
+  border: 1px solid black;
+  margin-top: 20px;
+}
+
+.movement-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.movement-table th,
+.movement-table td {
+  border: 1px solid black;
+  padding: 15px;
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.movement-table th {
+  font-weight: 700;
+}
+
+.qty-in {
+  color: green;
+  font-weight: 700;
+}
+
+.qty-out {
+  color: red;
+  font-weight: 700;
+}

@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+}
+.Product-layout{
+    display: flex;
+}
+
+.product-list-container {
+  width: 100%;
+  padding: 40px;
+  margin-left: 240px;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0;
+  color: black;
+}
+
+.add-product-btn {
+  background-color: #4ade80; /* Hijau terang */
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Controls Bar */
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd; /* Garis pemisah */
+  padding-bottom: 20px;
+}
+
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.filter-item select {
+  min-width: 145px;
+  padding: 10px 32px 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background: white;
+  color: #111;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.filter-item select:focus {
+  border-color: #5b4b8a;
+  box-shadow: 0 0 0 3px rgba(91, 75, 138, 0.14);
+}
+
+.chevron {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Table */
+.table-wrapper {
+  border: 1px solid black;
+  overflow-x: auto;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th, 
+.product-table td {
+  border: 1px solid black;
+  padding: 15px;
+  text-align: left;
+  font-size: 1.1rem;
+  color: black;
+}
+
+.product-table th {
+  font-weight: 700;
+  background-color: white;
+}
+
+.col-no { width: 50px; }
+.col-barcode { width: 200px; }
+.col-name { width: 300px; }
+.col-category { width: 150px; }
+.col-price { width: 120px; }
+.col-stock { width: 100px; }
+.col-unit { width: 100px; }
+.col-action { width: 150px; text-align: center; }
+
+/* Cells */
+.product-name-cell {
+  font-weight: 700;
+}
+
+.stock-empty {
+  color: red;
+  font-weight: 700;
+}
+
+.action-cell {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: black;
+}

@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+.analytic-layout{
+    display: flex;
+}
+
+.analytics-container {
+  padding: 40px;
+  width: 100%;
+  margin-left:240px ;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 0 30px 0;
+}
+
+/* Filter Bar */
+.filter-bar {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 15px 0;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 30px;
+}
+
+.filter-tab {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+}
+
+.filter-tab.active {
+  color: black;
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.date-input {
+  border: 1px solid black;
+  border-radius: 30px;
+  padding: 8px 15px;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+}
+
+.dash {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* KPI Cards */
+.kpi-cards-container {
+  display: flex;
+  gap: 20px;
+  background-color: #f3f4f6;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.kpi-card {
+  flex: 1;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  color: black;
+}
+
+.kpi-card.blue {
+  background-color: #3b82f6;
+}
+
+.kpi-card.green {
+  background-color: #10b981;
+}
+
+.kpi-card.orange {
+  background-color: #f59e0b;
+}
+
+.kpi-card.purple {
+  background-color: #8b5cf6;
+}
+
+.kpi-card h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.kpi-card p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Chart Section */
+.chart-container {
+  background-color: #f3f4f6;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+/* Bottom Section */
+.bottom-section {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.best-sellers {
+  flex: 7;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 15px 0;
+}
+
+.data-table {
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid black;
+  padding: 15px;
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.data-table th {
+  font-weight: 700;
+}
+
+/* Low Stock Card */
+.low-stock-card {
+  flex: 3;
+  background-color: #f87171;
+  border-radius: 15px;
+  padding: 20px;
+  color: white;
+}
+
+.low-stock-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+}
+
+.low-stock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.stock-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid white;
+  display: inline-block;
+}
+
+.stock-info {
+  font-weight: 500;
+}
