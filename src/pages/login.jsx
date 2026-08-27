@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {useForm} from 'react-hook-form'
+import {useLogin} from '../hooks/useLogin';
 import '../css/login.css';
 
 const LoginPage = () => {
-  const {register:loginForm,handleSubmit,formState:{error},reset} = useForm();
+  const { register: loginForm, handleSubmit } = useForm();
+  const { mutate, isPending} = useLogin();
 
-  const handleLogin = (data) => {
-    // e.preventDefault();
-    console.log('Logging in with:', data);
-    // Panggil API login di sini
+  
+ 
+
+  const handleLogin = (payload) => {
+    mutate(payload);
   };
 
   return (
@@ -27,10 +30,10 @@ const LoginPage = () => {
           
           <form onSubmit={handleSubmit(handleLogin)}>
             <div className="input-group">
-              <label>username</label>
+              <label>email</label>
               <input 
                 type="text" 
-                {...loginForm('username')}
+                {...loginForm('email')}
                 // value={username}
                 // onChange={(e) => setUsername(e.target.value)}
                 placeholder=""
@@ -47,14 +50,15 @@ const LoginPage = () => {
                 placeholder=""
               />
             </div>
-
+            
             <motion.button 
               type="submit"
               className="login-btn"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              disabled={isPending}
             >
-              Log in
+              {isPending ? 'prosessing' :'log in'}
             </motion.button>
           </form>
         </div>

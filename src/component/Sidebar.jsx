@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import {Icon} from '@iconify/react'
 import {useNavigate,useLocation} from 'react-router-dom';
 import './Sidebar.css'
+import {useAuth} from '../context/authContext';
 
 const menuItems = [
   { icon: <Icon icon="hugeicons:cashier"/>, label: '(POS)',navigate:'/pos' },
@@ -16,7 +17,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState(menuItems[0].label)
-
+  const {user,isLoading,logout} = useAuth();
+console.log(user)
   const handleNav = (menu,navigateTo) =>{
     setActiveItem(menu);
      if( navigateTo){
@@ -24,6 +26,11 @@ const Sidebar = () => {
      }
      setActiveItem(menuItems[0].label)
 
+  }
+
+  const handleLogout = ()=> {
+    logout()
+    navigate('/')
   }
 
   return (
@@ -72,19 +79,19 @@ const Sidebar = () => {
         <div className="user-profile">
           <span className="user-avatar" aria-hidden="true"><Icon icon="mdi:user"/></span>
           <div>
-            <p className="user-name">Admin</p>
+            <p className="user-name">{isLoading?'none' :user?.name}</p>
             <p className="user-role">Boss</p>
           </div>
         </div>
-        <motion.button
+        <motion.div
           className="logout-button"
           type="button"
           whileHover={{ x: 4 }}
           whileTap={{ scale: 0.98 }}
         >
           <span className="sidebar-icon" aria-hidden="true"><Icon icon="solar:logout-outline"/></span>
-          <span>Logout</span>
-        </motion.button>
+          <button onClick={handleLogout}>Logout</button>
+        </motion.div>
       </div>
     </motion.aside>
   )

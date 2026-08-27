@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from "@iconify/react";
 import Sidebar from '../component/Sidebar';
 import '../css/pos.css';
 import ReceiptModal from '../component/ReceiptModal';
+import {useCategory} from '../hooks/useCategory'
+import {useProducts} from '../hooks/useProduct'
+
+
+
 
 const PosPage = () => {
-  // Data dummy berdasarkan API
-  const [products] = useState([
-    { id: 1, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 2, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 3, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 4, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 5, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 6, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 7, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 8, name: 'COLA', price: 2.00, stock: 1000 },
-    { id: 9, name: 'COLA', price: 2.00, stock: 1000 },
-  ]);
+// Data dummy berdasarkan API
+  
 
   // Data cart dummy
   const [cartItems,setCartItems] = useState([
@@ -42,8 +37,13 @@ const PosPage = () => {
       ]
     }
 
-  const [receipt,setReceipt] = useState(null
-  )
+
+  const [categoryId, setCategoryId] = useState(5);
+  const { data: category, isLoading, isError, error } = useCategory();
+  const { data: product, isLoading: isProductLoad, isError: isProductErr, error: productErro } = useProducts(categoryId, 'ALL');
+  const [receipt, setReceipt] = useState(null);
+
+
 
   const handleCloseRigth = ()=>{
         setCartItems(null)
@@ -67,12 +67,13 @@ const PosPage = () => {
     setReceipt(null);
   };
 
-  const [activeTab, setActiveTab] = useState('ALL');
+  
 
   const [paymentMethod, setPaymentMethod] = useState('CASH');
 
   return (
     <div className="pos-layout">
+    
       <Sidebar />
       <section className="pos-container">
       {/* Bahagian Kiri (70%) */}
@@ -89,20 +90,23 @@ const PosPage = () => {
 
         {/* Kategori Tabs */}
         <div className="category-tabs">
-          {['ALL', 'DRINK', 'FOOD'].map((tab) => (
+          
+          {isLoading? <span>loading</span>:
+          category.map((category,index) => (
             <button
-              key={tab}
-              className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
+              key={category?.categoryId}
+              className={`tab-btn ${categoryId === category?.categoryId ? 'active' : ''}`}
+              onClick={() => setCategoryId(category?.categoryId)}
             >
-              {tab}
+              {category.categoryName}
             </button>
           ))}
         </div>
 
         {/* Grid Produk */}
         <div className="product-grid">
-          {products.map((product, index) => (
+          {isProductLoad? <span>loading</span>:
+          product?.map((product, index) => (
             <motion.div
               key={index}
               className="product-card"
@@ -110,7 +114,7 @@ const PosPage = () => {
               whileTap={{ scale: 0.95 }}
             >
               <h3 className="product-name">{product.name}</h3>
-              <p className="product-price">RM{product.price}</p>
+              <p className="product-price">RM{product.sell_price}</p>
               <div className="product-footer">
                 <span className="product-stock">stock:{product.stock}</span>
                 <span className="cart-icon"><Icon icon="mdi:cart"/></span>

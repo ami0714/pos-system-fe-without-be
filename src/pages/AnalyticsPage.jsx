@@ -4,34 +4,17 @@ import '../css/AnalyticsPage.css';
 import Sidebar from '../component/Sidebar';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,CartesianGrid } from 'recharts'
 import '../css/AnalyticsPage.css';
+import {useDashboard} from '../hooks/useDashboard';
 
 const AnalyticsPage = () => {
-  const [timeRange, setTimeRange] = useState('Today');
+  const [timeRange, setTimeRange] = useState('ALL');
+  const [startDate,setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null)
+   const { data: dashboard, isLoading, isError, error } = useDashboard(timeRange,startDate,endDate);
+ 
 
-  // Dummy Data dari API
-  const chartData = [
-    { time: '8AM', sales: 10 },
-    { time: '10AM', sales: 20 },
-    { time: '12PM', sales: 30 },
-    { time: '2PM', sales: 100 },
-    { time: '4PM', sales: 50 },
-  ];
-
-  const bestSellers = [
-    { no: 1, name: 'Magii', unit: 'pcs', jualan: 'RM1234' },
-    { no: 2, name: 'Coca-Cola', unit: 'pcs', jualan: 'RM1234' },
-    { no: 3, name: 'Biskut', unit: 'pcs', jualan: 'RM1234' },
-    { no: 4, name: 'Minyak Masak', unit: 'botol', jualan: 'RM1234' },
-    { no: 5, name: 'Gula', unit: 'kg', jualan: 'RM1234' },
-  ];
-
-  const lowStockItems = [
-    { name: 'maggie', stock: 0, min: 10 },
-    { name: 'maggie', stock: 0, min: 10 },
-    { name: 'maggie', stock: 0, min: 10 },
-  ];
-
-  const filters = ['Today', 'Yesterday', '7 days', 'This month'];
+ 
+  const filters = ['ALL','Today','weekly', 'This month','custom_date'];
 
   return (
     <div className="analytic-layout">
@@ -47,7 +30,7 @@ const AnalyticsPage = () => {
       {/* Filter Bar */}
       <div className="filter-bar">
         <div className="filter-tabs">
-          {filters.map((filter) => (
+          { filters.map((filter) => (
             <button
               key={filter}
               className={`filter-tab ${timeRange === filter ? 'active' : ''}`}
@@ -57,38 +40,61 @@ const AnalyticsPage = () => {
             </button>
           ))}
         </div>
-        <div className="date-filter">
+        {timeRange == 'custom_date'?(
+          <div className="date-filter">
           <span className="date-label">Date:</span>
-          <input type="date" defaultValue="2026-08-01" className="date-input" />
+          <input onChange={(e)=> startDate(e.target.value)} type="date"  className="date-input" />
           <span className="dash">—</span>
-          <input type="date" defaultValue="2026-08-20" className="date-input" />
+          <input onChange={(e)=> endDate(e.target.value)} type="date"  className="date-input" />
         </div>
+        ):
+        (
+          <span></span>
+        )
+
+        }
       </div>
 
       {/* KPI Cards */}
       <div className="kpi-cards-container">
         <motion.div className="kpi-card blue" whileHover={{ scale: 1.02 }}>
           <h3>GROSS SALE</h3>
-          <p>RM1234</p>
+          {isLoading ?
+          <p>loadig....</p>:
+              <p>RM{dashboard?.kpiData?.[0]?.grandTotal}</p>
+          }
+          
         </motion.div>
         <motion.div className="kpi-card green" whileHover={{ scale: 1.02 }}>
           <h3>NET PROFIT</h3>
-          <p>RM1234</p>
+          {isLoading ?
+          <p>loadig....</p>:
+              <p>RM{dashboard?.kpiData?.[0]?.netProfit}</p>
+          }
         </motion.div>
         <motion.div className="kpi-card orange" whileHover={{ scale: 1.02 }}>
           <h3>TRANSACTION</h3>
-          <p>RM1234</p>
+         {isLoading ?
+          <p>loadig....</p>:
+              <p>{dashboard?.kpiData?.[0]?.transactions}</p>
+          }
         </motion.div>
         <motion.div className="kpi-card purple" whileHover={{ scale: 1.02 }}>
           <h3>AVERAGE RECEIPT</h3>
-          <p>RM1234</p>
+         {isLoading ?
+          <p>loadig....</p>:
+              <p>RM{parseFloat(dashboard?.kpiData?.[0]?.avg_receipt).toFixed(2)}</p>
+          }
         </motion.div>
       </div>
 
       {/* Chart Section */}
       <div className="chart-container">
+       {!dashboard?.chart ? (
+        <p>loading.....</p>
+       ):
         <ResponsiveContainer width="100%" height={400}>
-  <LineChart data={chartData}>
+  <LineChart data={dashboard?.chart}>
     <CartesianGrid strokeDasharray="3 3" />  
     <XAxis 
       dataKey="time" 
@@ -110,6 +116,8 @@ const AnalyticsPage = () => {
     />
   </LineChart>
 </ResponsiveContainer>
+            
+       }
       </div>
 
       {/* Bottom Section: Best Sellers & Low Stock */}
@@ -127,12 +135,12 @@ const AnalyticsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {bestSellers.map((item, index) => (
+              {dashboard?.bestSelling?.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.no}</td>
-                  <td>{item.name}</td>
-                  <td>{item.unit}</td>
-                  <td>{item.jualan}</td>
+                  <td>{index+1}</td>
+                  <td>{item?.name}</td>
+                  <td>{`${item?.sold} ${item?.unit}`}</td>
+                  <td>{item?.profit}</td>
                 </tr>
               ))}
             </tbody>
@@ -142,11 +150,11 @@ const AnalyticsPage = () => {
         {/* Low Stock Card */}
         <div className="low-stock-card">
           <h2 className="low-stock-title">Low Stock</h2>
-          {lowStockItems.map((item, index) => (
+          {dashboard?.lowStock.map((item, index) => (
             <div key={index} className="low-stock-row">
               <span className="stock-dot"></span>
               <span className="stock-text">
-                {item.name} <span className="stock-info">(stock:{item.stock} | Min:{item.min})</span>
+                {item?.name} <span className="stock-info">(stock:{item.stock_quantity} | Min:{item.min_stock})</span>
               </span>
             </div>
           ))}

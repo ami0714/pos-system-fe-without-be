@@ -8,12 +8,17 @@ import StockPage from './pages/stockPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import TransactionsPage from './pages/TransactionPage';
 import './App.css'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import AuthContextProvider from './context/authContext';
 
 function App() {
-  
+  const  queryClient = new QueryClient();
 
   return (
     <>
+     <QueryClientProvider client={queryClient} >
+    <AuthContextProvider>
+   
     <Router>
       <Routes>
         <Route path='/' element={<LoginPage />}/>
@@ -26,7 +31,9 @@ function App() {
         <Route path='/TransactionsPage' element={<TransactionsPage />} />
       </Routes>
     </Router>
-     
+    
+    </AuthContextProvider>
+     </QueryClientProvider>
     </>
   )
 }
