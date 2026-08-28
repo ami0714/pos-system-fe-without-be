@@ -43,9 +43,9 @@ const AnalyticsPage = () => {
         {timeRange == 'custom_date'?(
           <div className="date-filter">
           <span className="date-label">Date:</span>
-          <input onChange={(e)=> startDate(e.target.value)} type="date"  className="date-input" />
+          <input onChange={(e)=> setStartDate(e.target.value)} type="date"  className="date-input" />
           <span className="dash">—</span>
-          <input onChange={(e)=> endDate(e.target.value)} type="date"  className="date-input" />
+          <input onChange={(e)=> setEndDate(e.target.value)} type="date"  className="date-input" />
         </div>
         ):
         (

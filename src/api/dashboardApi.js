@@ -12,7 +12,7 @@ export async function getDashboard(filter,startDate,endDate){
     const queryString = params.toString()
 
     const url = !queryString && !startDate && !endDate && filter ? `/dashboard?filter=${filter}`: 
-                `/dashboard?filter=${filter}?${queryString}`
+                `/dashboard?filter=${filter}&${queryString}`
     
        const response = await get(url)
 
