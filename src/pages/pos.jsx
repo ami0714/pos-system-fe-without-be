@@ -1,25 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Icon } from "@iconify/react";
 import Sidebar from '../component/Sidebar';
 import '../css/pos.css';
 import ReceiptModal from '../component/ReceiptModal';
 import {useCategory} from '../hooks/useCategory'
-import {useProducts} from '../hooks/useProduct'
+import {useProducts, useProductsByBarcode} from '../hooks/useProduct'
 
 
 
 
 const PosPage = () => {
-// Data dummy berdasarkan API
-  
+//useForm untuk barcode
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: { barcode: '' }
+  });
+  //buat ref untuk barcode untuk buat focus secara auto bila page load
+  const barcodeInputRef = useRef(null);
+  //setField untuk barcode di useForm
+  const barcodeField = register('barcode');
+  const [barcode, setBarcode] = useState('');
+
+
+  //useEffect untuk focus pada input barcode bila page load
+  useEffect(() => {
+    barcodeInputRef.current?.focus();
+  }, []);
 
   // Data cart dummy
-  const [cartItems,setCartItems] = useState([
-    { id: 1, name: 'Coca-Cola', qty: 3, price: 2.00 },
-    { id: 2, name: 'Maggi', qty: 2, price: 2.00 },
-    { id: 3, name: 'Biskut', qty: 2, price: 2.00 },
-  ]);
+  const [cartItems,setCartItems] = useState([]);
+
+  //fungsi addtocart
+ const addToCart = (product) => {
+    const existingItem = cartItems.find(item => item.id === product.id);
+    if (existingItem) {
+      // Jika item sudah ada dalam cart, tambahkan kuantiti
+      setCartItems(cartItems.map(item =>
+        item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+      ));
+    } else {
+      // Jika item belum ada dalam cart, tambahkan item baru
+      setCartItems([...cartItems, { ...product, qty: 1 }]);
+    }
+  };
 
   //dummy receipt 
   const  receiptData =  {
@@ -41,16 +65,38 @@ const PosPage = () => {
   const [categoryId, setCategoryId] = useState(5);
   const { data: category, isLoading, isError, error } = useCategory();
   const { data: product, isLoading: isProductLoad, isError: isProductErr, error: productErro } = useProducts(categoryId, 'ALL');
+  const { data: barcodeProduct, isLoading: isBarcodeLoading, isError: isBarcodeError } = useProductsByBarcode(barcode);
   const [receipt, setReceipt] = useState(null);
+
+  const onBarcodeSubmit = ({ barcode: submittedBarcode }) => { //fungsi untuk handleSUbmit barcode
+    setBarcode(submittedBarcode.trim());
+  };
+//jika ada barcode product maka secara auto akan setCartitem tu mengikut condition yang ada,jika barcode tiada maka return terus
+  useEffect(() => {
+    if (!barcodeProduct || !barcode) return;
+
+    setCartItems(currentItems => {
+      const existingItem = currentItems.find(item => item.id === barcodeProduct.id);
+      if (existingItem) {
+        return currentItems.map(item =>
+          item.id === barcodeProduct.id ? { ...item, qty: item.qty + 1 } : item
+        );
+      }
+      return [...currentItems, { ...barcodeProduct, qty: 1 }];
+    });
+    reset();
+    setBarcode('');
+    barcodeInputRef.current?.focus();
+  }, [barcodeProduct, barcode, reset]);
 
 
 
   const handleCloseRigth = ()=>{
-        setCartItems(null)
+      setCartItems([])
   }
-  const [grandTotal,setGrandTotal] = useState(cartItems?.reduce((total,item)=>{
-       return total + (item?.price *item?.qty)},0
-))
+    const grandTotal = cartItems.reduce((total, item) => {
+      return total + (Number(item?.sell_price) * Number(item?.qty));
+    }, 0);
   const [balance,setBalance] = useState(null);
 
   const handleBalance = (cash)=>{
@@ -79,14 +125,22 @@ const PosPage = () => {
       {/* Bahagian Kiri (70%) */}
       <div className="pos-left">
         {/* Bar Carian */}
-        <div className="search-bar">
+        <form className="search-bar" onSubmit={handleSubmit(onBarcodeSubmit)}>
           <input 
             type="text" 
             placeholder="search product/scan barcode" 
             className="search-input"
+            {...barcodeField}
+            ref={(element) => {
+              barcodeField.ref(element);
+              barcodeInputRef.current = element;
+            }}
           />
-          <button className="add-btn">+</button>
-        </div>
+          <button type="submit" className="add-btn" disabled={isBarcodeLoading}>
+            {isBarcodeLoading ? '...' : '+'}
+          </button>
+          {isBarcodeError && <span className="barcode-error">Product not found</span>}
+        </form>
 
         {/* Kategori Tabs */}
         <div className="category-tabs">
@@ -117,7 +171,7 @@ const PosPage = () => {
               <p className="product-price">RM{product.sell_price}</p>
               <div className="product-footer">
                 <span className="product-stock">stock:{product.stock}</span>
-                <span className="cart-icon"><Icon icon="mdi:cart"/></span>
+                <span className="cart-icon"><Icon onClick={() => addToCart(product)} icon="mdi:cart"/></span>
               </div>
             </motion.div>
           ))}
@@ -125,7 +179,7 @@ const PosPage = () => {
       </div>
 
       {/* Bahagian Kanan (30%) - Panel Order */}
-      {cartItems && 
+      {cartItems  && 
        <div className="pos-right">
         <div className="header">
             <h1 className="order-title">ORDER DETAIL</h1>
@@ -148,9 +202,9 @@ const PosPage = () => {
             {cartItems.map((item, index) => (
               <tr key={index} className="table-row">
                 <td className="col-product">{index + 1}. {item?.name}</td>
-                <td className="col-price">{item?.price.toFixed(2)}</td>
+                <td className="col-price">{item?.sell_price}</td>
                 <td className="col-qty">{item?.qty}</td>
-                <td className="col-subtotal">{(item?.price * item?.qty).toFixed(2)}</td>
+                <td className="col-subtotal">{(item?.sell_price * item?.qty).toFixed(2)}</td>
                 <td className="col-action"><Icon icon="mdi:trash"/></td>
               </tr>
             ))}
@@ -169,7 +223,7 @@ const PosPage = () => {
             <span>Total Item :{cartItems?.length}</span>
           </div>
           <div className="summary-row">
-            <span>Subtotal :RM12</span>
+            <span>Subtotal :RM{grandTotal.toFixed(2)}</span>
           </div>
           <div className="summary-row grand-total">
             <span>Grand Total :RM{grandTotal}</span>

@@ -4,17 +4,30 @@ import { motion } from 'framer-motion';
 import Sidebar from '../component/Sidebar';
 import SearchBar from '../component/SearchBar';
 import '../css/StockPage.css';
+import {useProductsByBarcode} from '../hooks/useProduct'
+import {useStock} from '../hooks/useStock'
 
 const StockPage = () => {
+
+  const [barcode,setBarcode] = useState(null)
   const [activeTab, setActiveTab] = useState('stock_in'); // 'stock_in' atau 'movement_log'
   const [stockMode, setStockMode] = useState('IN'); // 'IN' atau 'ADJUSTMENT'
+  const { data: product, isLoading:productLoading, isError, error } = useProductsByBarcode(barcode);
 
-  // Data dummy produk (dari API)
-  const dummyProduct = {
-    name: 'Magii',
-    current_stock: '1000',
-    unit: 'box'
-  };
+
+
+
+  //movelog
+    const [type,setType] = useState('ALL');
+    const [startDate,setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const { data:productLog, isLoading:logLoading,isError:productErr,error:logErr} = useStock(type,startDate,endDate)
+  
+
+  
+
+const typeFilter =['ALL','IN','OUT','SALE','ADJUST'];
+  
 
   // Dummy data untuk Stok Movement Log
   const movements = [
@@ -63,11 +76,11 @@ const StockPage = () => {
       </div>
 
       {/* Kandungan Tab */}
-      {activeTab === 'stock_in' ? (
+      {activeTab === 'stock_in'  ? (
         <div className="stock-in-container">
           {/* Search Bar & Mode Buttons */}
           <div className="search-row">
-            <SearchBar/>
+            <SearchBar onValue={(value) => setBarcode(value)}/>
             <div className="mode-buttons">
               <motion.button
                 className={`mode-btn ${stockMode === 'IN' ? 'active' : ''}`}
@@ -85,8 +98,9 @@ const StockPage = () => {
               </motion.button>
             </div>
           </div>
-
+       
           {/* Form Card */}
+          { product && barcode ? 
           <motion.div
             className="stock-form-card"
             initial={{ opacity: 0, y: 20 }}
@@ -97,11 +111,11 @@ const StockPage = () => {
               <div className="display-info">
                 <div className="info-row">
                   <span className="info-label">Name:</span>
-                  <span className="info-value">{dummyProduct.name}</span>
+                  <span className="info-value">{product?.name}</span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">Current Stock:</span>
-                  <span className="info-value">{dummyProduct.current_stock} {dummyProduct.unit}</span>
+                  <span className="info-value">{product?.stock} {product?.unit}</span>
                 </div>
               </div>
 
@@ -146,26 +160,35 @@ const StockPage = () => {
                 </motion.button>
               </div>
             </form>
-          </motion.div>
+          </motion.div> :
+          <span>please insert barcode</span>
+          
+
+          }
         </div>
       ) : (
         <div className="movement-log-container">
-          {/* Search Bar */}
-          <div className="search-row centered">
-            <SearchBar />
-          </div>
 
           {/* Type & Date Filters */}
           <div className="filters-row">
             <div className="filter-item">
               <span className="filter-label">Type</span>
-              <span className="chevron">⌄</span>
+              <select value={type} onChange={(event) => setType(event.target.value)}>
+            {  
+              typeFilter?.map((cat,index) => 
+                <option key={index} value={cat} >
+                  {cat}
+                  
+                </option>)
+                }
+              
+                </select>
             </div>
             <div className="filter-item">
               <span className="filter-label">Date:</span>
-              <input type="date" defaultValue="2026-08-01" className="date-input" />
+              <input type="date" onChange={(e) => setStartDate(e.target.value)} defaultValue={null} className="date-input" />
               <span className="dash">—</span>
-              <input type="date" defaultValue="2026-08-20" className="date-input" />
+              <input type="date" onChange={(e)=> setEndDate(e.target.value)} defaultValue={null} className="date-input" />
             </div>
           </div>
 
@@ -183,19 +206,29 @@ const StockPage = () => {
                   <th>Note</th>
                 </tr>
               </thead>
+             {!logLoading ?
               <tbody>
-                {movements.map((item, index) => (
-                  <tr key={item.id}>
+                {productLog?.map((item, index) => (
+                  <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{item.date}</td>
-                    <td>{item.product}</td>
-                    <td>{item.type}</td>
-                    <td>{item.admin}</td>
-                    <td className={item.qty.startsWith('+') ? 'qty-in' : 'qty-out'}>{item.qty}</td>
-                    <td>{item.note}</td>
+                    <td>{item?.date}</td>
+                    <td>{item?.productName}</td>
+                    <td>{item?.movType}</td>
+                    <td>{item?.adminName}</td>
+                    <td >{item?.quantity}</td>
+                    <td>{item?.note}</td>
                   </tr>
                 ))}
               </tbody>
+              :
+              
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center' }}>Loading...</td>
+                </tr>
+              
+
+
+             }
             </table>
           </div>
         </div>
