@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import Sidebar from '../component/Sidebar';
 import '../css/pos.css';
 import ReceiptModal from '../component/ReceiptModal';
+import QrPayment from '../component/qrPayment';
 import {useCategory} from '../hooks/useCategory'
 import {useAddOrder} from '../hooks/useCart'
 import {useProducts, useProductsByBarcode} from '../hooks/useProduct'
@@ -46,21 +47,7 @@ const PosPage = () => {
     }
   };
 
-  //dummy receipt 
-  const  receiptData =  {
-      id: 1,
-      invoice_no: 'INV-260818-0001',
-      date: '29/01/2026',
-      cashier: 'Admin',
-      payment: 'Cash',
-      total: 12.00,
-      status: 'COMPLETED',
-      items: [
-        { name: 'Coca-Cola', price: 2.00, qty: 2 },
-        { name: 'Maggi', price: 2.00, qty: 2 },
-        { name: 'Biskut', price: 2.00, qty: 2 },
-      ]
-    }
+  
 
 
   const [categoryId, setCategoryId] = useState(5);
@@ -101,17 +88,16 @@ const PosPage = () => {
   const [balance,setBalance] = useState(null);
 
   const handleBalance = (cash)=>{
-    if(cash === grandTotal){
-        setBalance('no need balance')
-    } else{
-        setBalance(cash-grandTotal)
-    }
-    
+   if(paymentMethod === 'CASH'){
+     const cashAmount = Number(cash);
+    setBalance(cashAmount - grandTotal);
+   }
+   
   }
-
- const { mutate,data, isPending,isSuccess} = useAddOrder();
-
-  const proceedOrder = () => {
+const [paymentMethod, setPaymentMethod] = useState('CASH');
+ const { mutate } = useAddOrder();
+ const [isShowQR, setIsShowQR] = useState(false);
+  const submitOrder = () => {
     const items = cartItems.map(item => ({
       productId: item.id,
       qty: item.qty,
@@ -121,26 +107,51 @@ const PosPage = () => {
       items: items,
       total: grandTotal,
       paymentMethod: paymentMethod,
-      paidAmount: paymentMethod === 'CASH' ? grandTotal + balance : grandTotal,
-      balance: balance,
-      discount: 0,
+      paidAmount: paymentMethod === 'CASH' ? grandTotal + Number(balance) : grandTotal,
+      balance: paymentMethod === 'CASH' ? Number(balance) : 0,
+      discount: 0.00,
     };
-     
-    mutate(payload);
-    if(isSuccess && !isPending){
-      setReceipt(data);
-      setCartItems([]);
+
+    if(paymentMethod === 'CASH' && Number(balance) < 0){
+        alert('Cash amount is less than grand total');
+        return;
     }
+
+    if(cartItems.length === 0) {
+        alert('Cart is empty');
+        return;
+    }
+    mutate(payload, {
+      onSuccess: (data) => {
+        setReceipt(data);
+        setCartItems([]);
+        setIsShowQR(false);
+      },
+    });
   }
 
+  const proceedOrder = () => {
+    if (paymentMethod === 'QR') {
+      setIsShowQR(true);
+      return;
+    }
 
+    submitOrder();
+  }
+
+  const closeQr = () => {
+    setIsShowQR(false);
+  }
   const closeReceipt = () => {
     setReceipt(null);
   };
+  const handleCloseRight = () => {
+    setCartItems([]);
+  }
 
   
 
-  const [paymentMethod, setPaymentMethod] = useState('CASH');
+  
 
   return (
     <div className="pos-layout">
@@ -171,7 +182,7 @@ const PosPage = () => {
         <div className="category-tabs">
           
           {isLoading? <span>loading</span>:
-          category.map((category,index) => (
+          category?.map((category,index) => (
             <button
               key={category?.categoryId}
               className={`tab-btn ${categoryId === category?.categoryId ? 'active' : ''}`}
@@ -191,12 +202,13 @@ const PosPage = () => {
               className="product-card"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => addToCart(product)}
             >
               <h3 className="product-name">{product.name}</h3>
               <p className="product-price">RM{product.sell_price}</p>
               <div className="product-footer">
                 <span className="product-stock">stock:{product.stock}</span>
-                <span className="cart-icon"><Icon onClick={() => addToCart(product)} icon="mdi:cart"/></span>
+                <span className="cart-icon"><Icon  icon="mdi:cart"/></span>
               </div>
             </motion.div>
           ))}
@@ -204,11 +216,11 @@ const PosPage = () => {
       </div>
 
       {/* Bahagian Kanan (30%) - Panel Order */}
-      {cartItems  && 
+      {cartItems.length > 0  && 
        <div className="pos-right">
         <div className="header">
             <h1 className="order-title">ORDER DETAIL</h1>
-            <Icon onClick={handleCloseRigth} style={{fontSize:'2em'}} icon="material-symbols:close" />
+            <Icon onClick={handleCloseRight} style={{fontSize:'2em'}} icon="material-symbols:close" />
         </div>
         
 
@@ -267,7 +279,7 @@ const PosPage = () => {
             </button>
             <button 
               className={`method-btn ${paymentMethod === 'QR' ? 'active' : ''}`}
-              onClick={() => setPaymentMethod('QR')}
+              onClick={() =>{ setPaymentMethod('QR'); setBalance(0);}}
             >
               QR
             </button>
@@ -297,7 +309,7 @@ const PosPage = () => {
             className="btn-proceed"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={()=> setReceipt(receiptData)}
+            onClick={() => proceedOrder()}
           >
             Proceed
           </motion.button>
@@ -308,7 +320,9 @@ const PosPage = () => {
       }
      
       </section>
-      <ReceiptModal invoice={receipt}  onClose={closeReceipt} />
+      
+{receipt && !isShowQR && <ReceiptModal invoice={receipt} onClose={closeReceipt} />}
+{isShowQR && <QrPayment isProceed={submitOrder} showQr={isShowQR} onClose={closeQr} />}
     </div>
   );
 };

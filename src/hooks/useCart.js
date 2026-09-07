@@ -7,13 +7,12 @@ export function useAddOrder() {
 
 
   return useMutation({
-    mutationFn: async (cartItems,inputCash) => {
-      const response = await addOrder({ cartItems, inputCash });
+    mutationFn: async (payload) => {
+      const response = await addOrder(payload);
       return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      navigate('/pos');
     },
     onError: (err) => {
       console.error('error mutasi cart:', err?.message || err);

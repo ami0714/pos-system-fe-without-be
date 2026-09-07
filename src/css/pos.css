@@ -17,11 +17,11 @@ body {
 .pos-container {
   display: flex;
   flex: 1;
-  margin-left:240px ;
+  margin-left: 240px;
   min-width: 0;
   min-height: 100vh;
-  padding: 20px;
-  gap: 20px;
+  padding: 16px;
+  gap: 16px;
 }
 
 .pos-left,
@@ -31,34 +31,36 @@ body {
 
 /* Bahagian Kiri */
 .pos-left {
-  flex: 7; /* 70% */
-  padding-right: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: 4px;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
-  gap: 10px;
+  margin-bottom: 22px;
+  gap: 8px;
 }
 
 .search-input {
   flex: 1;
-  padding: 15px 20px;
+  min-width: 0;
+  padding: 12px 16px;
   border: 2px solid #ccc;
   border-radius: 50px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   outline: none;
 }
 
 .add-btn {
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background-color: black;
   color: white;
   border: none;
-  font-size: 2rem;
+  font-size: 1.6rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -67,15 +69,16 @@ body {
 
 .category-tabs {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-bottom: 40px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  margin-bottom: 24px;
 }
 
 .tab-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   color: black;
@@ -89,27 +92,27 @@ body {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 12px;
 }
 
 .product-card {
   border: 1px solid black;
-  padding: 10px;
+  padding: 12px;
   border-radius: 5px;
   cursor: pointer;
   background-color: white;
 }
 
 .product-name {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
 }
 
 .product-price {
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin: 0 0 20px 0;
+  margin: 0 0 14px 0;
 }
 
 .product-footer {
@@ -119,12 +122,12 @@ body {
 }
 
 .product-stock {
-  font-size: 1.2rem;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
 .cart-icon {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 /* Bahagian Kanan */
@@ -133,11 +136,11 @@ body {
     flex-direction: row;
 }
 .pos-right {
-  flex: 2; /* 30% */
+  flex: 0 0 clamp(280px, 27vw, 360px);
+  min-width: 190px;
   border: 1px solid #ddd;
   border-radius: 20px;
-  padding: 50px;
-  padding-left: 80px;
+  padding: 22px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   background-color: white;
   display: flex;
@@ -145,10 +148,11 @@ body {
 }
 
 .order-title {
-  font-size: 2rem;
+  flex: 1;
+  font-size: 1.45rem;
   font-weight: 700;
   text-align: center;
-  margin: 0 0 30px 0;
+  margin: 0 0 20px 0;
 }
 
 .order-table {
@@ -192,29 +196,29 @@ body {
 .table-footer {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .section-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-align: center;
   border-bottom: 2px solid black;
   padding-bottom: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
-  font-size: 1rem;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
 }
 
 .summary-row.grand-total {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   border-top: 1px solid black;
   padding-top: 10px;
@@ -222,19 +226,19 @@ body {
 
 .method-buttons {
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-bottom: 40px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .method-btn {
-  padding: 10px 30px;
+  flex: 1;
+  padding: 8px 16px;
   border-radius: 30px;
   border: 1px solid black;
   font-weight: 700;
   cursor: pointer;
   background-color: white;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 .method-btn.active {
@@ -245,14 +249,14 @@ body {
 
 .inputCash {
   width: 100%;
-  margin: 4px 0 24px;
-  padding: 13px 16px;
+  margin: 4px 0 16px;
+  padding: 10px 12px;
   border: 2px solid #d8d5e5;
   border-radius: 10px;
   outline: none;
   color: #252238;
   background-color: #faf9fd;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -280,16 +284,16 @@ body {
 
 .action-buttons {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   margin-top: auto;
 }
 
 .btn-cancel, .btn-proceed {
   flex: 1;
-  padding: 15px;
+  padding: 11px;
   border-radius: 30px;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -302,4 +306,31 @@ body {
   background-color: #5b4b8a;
   color: white;
   border: none;
+}
+
+@media (max-width: 1100px) {
+  .pos-container {
+    margin-left: 210px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pos-right {
+    flex-basis: 280px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .pos-container {
+    flex-direction: column;
+    margin-left: 0;
+  }
+
+  .pos-right {
+    width: 100%;
+    min-width: 0;
+  }
 }
