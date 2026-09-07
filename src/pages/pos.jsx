@@ -6,6 +6,7 @@ import Sidebar from '../component/Sidebar';
 import '../css/pos.css';
 import ReceiptModal from '../component/ReceiptModal';
 import {useCategory} from '../hooks/useCategory'
+import {useAddOrder} from '../hooks/useCart'
 import {useProducts, useProductsByBarcode} from '../hooks/useProduct'
 
 
@@ -106,6 +107,30 @@ const PosPage = () => {
         setBalance(cash-grandTotal)
     }
     
+  }
+
+ const { mutate,data, isPending,isSuccess} = useAddOrder();
+
+  const proceedOrder = () => {
+    const items = cartItems.map(item => ({
+      productId: item.id,
+      qty: item.qty,
+    }));
+       
+    const payload = {
+      items: items,
+      total: grandTotal,
+      paymentMethod: paymentMethod,
+      paidAmount: paymentMethod === 'CASH' ? grandTotal + balance : grandTotal,
+      balance: balance,
+      discount: 0,
+    };
+     
+    mutate(payload);
+    if(isSuccess && !isPending){
+      setReceipt(data);
+      setCartItems([]);
+    }
   }
 
 

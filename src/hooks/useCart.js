@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {addOrder} from '../api/cartApi';
 
-export function useLogin() {
+export function useAddOrder() {
   const queryClient = useQueryClient();
 
 
