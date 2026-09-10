@@ -3,24 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../component/Sidebar';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
+import {useProductsByBarcode,useAddproduct,useEditproduct} from '../hooks/useProduct'
+import {useCategory} from '../hooks/useCategory'
+import {useUnits} from '../hooks/useUnit'
 import '../css/AddEdit.css';
 
 const ProductFormPage = () => {
-  const { id } = useParams(); // Ambil ID dari URL (jika ada)
+  const { barcode } = useParams(); // Ambil ID dari URL (jika ada)
   const navigate = useNavigate();
+  const { data: category,isLoading:catLoading,isError:catErr,error:catError} = useCategory();
+  const {data:unit,isLoading:unitLoading,isError:isUnitErr} = useUnits();
+   const { data: product, isLoading:productLoading, isError  } = useProductsByBarcode(barcode);
+
   
   // Dummy data untuk mode Edit (hanya satu data)
-  const dummyProduct = {
-    id: 1,
-    barcode: '1234567890123',
-    name: 'Coca-Cola',
-    category: 'Minuman',
-    cost_price: '1.50',
-    sell_price: '2.00',
-    stock: '45',
-    min_stock: '10',
-    unit: 'pcs'
-  };
+  
 
   // useForm untuk formData
   // const [formData, setFormData] = useState({
@@ -46,23 +43,25 @@ const ProductFormPage = () => {
     unit: ''
   }
  })
-
-  // Guna useEffect untuk set data jika mode Edit (ada id)
+   
+  // Guna useEffect untuk set data jika mode Edit (ada barcode)
+  const [productId,setProductId] = useState(null);
   useEffect(() => {
-    if (id) {
+    if (barcode) {
       // Jika ada id, kita isi dengan dummy data
       reset({
-        barcode: dummyProduct.barcode,
-        name: dummyProduct.name,
-        category: dummyProduct.category,
-        cost_price: dummyProduct.cost_price,
-        sell_price: dummyProduct.sell_price,
-        stock: dummyProduct.stock,
-        min_stock: dummyProduct.min_stock,
-        unit: dummyProduct.unit
+        barcode: product?.barcode,
+        name: product?.name,
+        category: product?.category_id,
+        cost_price: product?.cost_price,
+        sell_price: product?.sell_price,
+        stock: product?.stock,
+        min_stock: product?.min_stock,
+        unit: product?.unitId
       });
+      setProductId(product?.id)
     }
-  }, [id]);
+  }, [barcode , product, reset]);
 
   // Fungsi untuk update state input
   // const handleChange = (e) => {
@@ -74,16 +73,46 @@ const ProductFormPage = () => {
   // };
 
   // Fungsi submit (Add atau Update)
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (id) {
-      console.log('Update produk dengan ID:', id, formData);
-      // Panggil API update di sini
+  const {mutate} = useAddproduct()
+  const {mutate:mutateEdit} = useEditproduct()
+  const onSubmit = (data) => {
+    
+    if (barcode) {
+         if(!data){
+          throw new Error("err edit");
+          
+         }
+         mutateEdit({payload:data,productId:productId},{
+        onSuccess:(data) =>{
+          alert('success edit product')
+        navigate('/product')
+
+        },
+        onError:(err)=>{
+          alert(err?.message || 'error add product')
+        }
+       }
+       )
+      
     } else {
-      console.log('Tambah produk baru:', formData);
-      // Panggil API create di sini
+      if(!data){
+        throw new Error("no data to send");
+        
+      }
+       mutate({payload:data},{
+        onSuccess:(data) =>{
+          alert('success add product')
+        navigate('/product')
+
+        },
+        onError:(err)=>{
+          alert(err?.message || 'error add product')
+        }
+       }
+       )
+
     }
-    navigate('/products'); // Kembali ke halaman senarai produk selepas submit
+  
   };
 
   return (
@@ -96,7 +125,7 @@ const ProductFormPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="form-title">{id ? 'Edit Product':'Add Product'}</h1>
+        <h1 className="form-title">{barcode ? 'Edit Product':'Add Product'}</h1>
         
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Barcode */}
@@ -105,6 +134,7 @@ const ProductFormPage = () => {
             <input 
               type="text" 
               name="barcode" 
+              
               {...regisInput('barcode')}
               // value={formData.barcode}
               // onChange={handleChange}
@@ -135,12 +165,18 @@ const ProductFormPage = () => {
               {...regisInput('category')}
               // value={formData.category}
               // onChange={handleChange}
+              value={product?.category_id}
               className="form-select"
             >
-              <option value="">-- Pilih Kategori --</option>
-              <option value="Minuman">Minuman</option>
-              <option value="Makanan">Makanan</option>
-              <option value="Barang Dapur">Barang Dapur</option>
+              {catLoading ? (
+                <option value="">Loading...</option>
+              ) : (
+                category?.map((cat) => (
+                  <option key={cat.categoryId} value={cat.categoryId}>
+                    {cat.categoryName}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
@@ -150,6 +186,7 @@ const ProductFormPage = () => {
             <input 
               type="number" 
               name="cost_price" 
+              step="any"
               {...regisInput('cost_price')}
               // value={formData.cost_price}
               // onChange={handleChange}
@@ -163,6 +200,7 @@ const ProductFormPage = () => {
             <input 
               type="number" 
               name="sell_price" 
+              step="any"
               {...regisInput('sell_price')}
               // value={formData.sell_price}
               // onChange={handleChange}
@@ -181,7 +219,7 @@ const ProductFormPage = () => {
                 // value={formData.stock}
                 // onChange={handleChange}
                 className="form-input small"
-                disabled ={id?true:false}
+                disabled ={barcode?true:false}
               />
             </div>
             <div className="form-group half">
@@ -209,10 +247,15 @@ const ProductFormPage = () => {
               // onChange={handleChange}
               className="form-select"
             >
-              <option value="pcs">pcs</option>
-              <option value="kg">kg</option>
-              <option value="botol">botol</option>
-              <option value="pack">pack</option>
+             {unitLoading ? (
+                <option value="">Loading...</option>
+              ) : (
+                unit?.map((cat) => (
+                  <option key={cat.categoryId} value={cat.unitId}>
+                    {cat.unitName}
+                  </option>
+                ))
+              )}
             </select>
           </div>
 
@@ -224,7 +267,7 @@ const ProductFormPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {id ? 'Update' : 'Add'}
+              {barcode ? 'Update' : 'Add'}
             </motion.button>
           </div>
         </form>

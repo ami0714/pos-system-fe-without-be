@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import Sidebar from '../component/Sidebar';
 import SearchBar from '../component/SearchBar';
 import '../css/StockPage.css';
 import {useProductsByBarcode} from '../hooks/useProduct'
+import {useStockMovement} from '../hooks/useStock'
 import {useStock} from '../hooks/useStock'
 
 const StockPage = () => {
 
   const [barcode,setBarcode] = useState(null)
   const [activeTab, setActiveTab] = useState('stock_in'); // 'stock_in' atau 'movement_log'
-  const [stockMode, setStockMode] = useState('IN'); // 'IN' atau 'ADJUSTMENT'
+  const [stockMode, setStockMode] = useState('IN'); // 'IN' atau 'ADJUSt'
   const { data: product, isLoading:productLoading, isError, error } = useProductsByBarcode(barcode);
 
 
@@ -22,7 +23,7 @@ const StockPage = () => {
     const [startDate,setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const { data:productLog, isLoading:logLoading,isError:productErr,error:logErr} = useStock(type,startDate,endDate)
-  
+     const[productId,setProductId] = useState(null);
 
   
 
@@ -42,15 +43,54 @@ const typeFilter =['ALL','IN','OUT','SALE','ADJUST'];
     defaultValues: {
       stock: '',
       cost_price: '',
+      sell_price: '',
       note: ''
     }
   });
 
+  useEffect(() => {
+      if (product) {
+        reset({
+          stock: '',
+          cost_price: product.cost_price || '',
+          sell_price: product.sell_price || '',
+          note: ''
+        
+        });
+        setProductId(product?.id);
+      }
+    }, [product]);
+
+ const {mutate:mutateStockMovement} = useStockMovement();
+
   const onSubmit = (data) => {
-    console.log('Form submitted:', data);
-    console.log('Mode:', stockMode);
-    // Panggil API di sini
-    // reset(); // optional untuk clear form
+
+    if (!data){
+      alert('Please fill in the form');
+      return;
+    }
+    mutateStockMovement({ payload: data, type: stockMode, productId: productId },{
+      onSuccess: (data) => {
+         reset({
+          stock: '',
+          cost_price: product.cost_price || '',
+          sell_price: product.sell_price || '',
+          note: ''
+        
+        });
+        alert(data?.message || 'Stock movement successful');
+      },
+      onError: (error) => {
+        alert('Error in stock movement: ' + (error?.message || error));
+      }
+    }
+    
+    
+    );
+    
+  
+    
+
   };
 
   return (
@@ -90,8 +130,8 @@ const typeFilter =['ALL','IN','OUT','SALE','ADJUST'];
                 Stock IN
               </motion.button>
               <motion.button
-                className={`mode-btn ${stockMode === 'ADJUSTMENT' ? 'active' : ''}`}
-                onClick={() => setStockMode('ADJUSTMENT')}
+                className={`mode-btn ${stockMode === 'ADJUST' ? 'active' : ''}`}
+                onClick={() => setStockMode('ADJUST')}
                 whileTap={{ scale: 0.95 }}
               >
                 Adjustment
@@ -123,6 +163,7 @@ const typeFilter =['ALL','IN','OUT','SALE','ADJUST'];
                 <label>Stock</label>
                 <input
                   type="number"
+                  min={stockMode == 'IN' ?'0' :''}
                   {...register('stock', { required: 'Stock is required' })}
                   className="form-input small-input"
                 />
@@ -138,6 +179,17 @@ const typeFilter =['ALL','IN','OUT','SALE','ADJUST'];
                   className="form-input medium-input"
                 />
                 {errors.cost_price && <span className="error">{errors.cost_price.message}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>sell price</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('sell_price', { required: 'Sell price is required' })}
+                  className="form-input medium-input"
+                />
+                {errors.sell_price && <span className="error">{errors.sell_price.message}</span>}
               </div>
 
               <div className="form-group">

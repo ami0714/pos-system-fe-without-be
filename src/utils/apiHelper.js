@@ -50,6 +50,20 @@ export async function post(path, body) {
   return handleResponse(res);
 }
 
+// PUT
+export async function put(path, body) {
+  if (body) {
+    body = JSON.stringify(body);
+  }
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: body,
+  });
+  return handleResponse(res);
+}
+
 // DELETE
 export async function del(path) {
   const res = await fetch(`${BASE_URL}${path}`, {

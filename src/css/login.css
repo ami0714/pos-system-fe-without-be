@@ -12,89 +12,123 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #5b4b8a; /* Warna ungu latar belakang */
+  background:
+    radial-gradient(circle at 70% 20%, rgba(139, 92, 246, 0.45), transparent 22%),
+    radial-gradient(circle at 25% 78%, rgba(91, 75, 138, 0.30), transparent 22%),
+    linear-gradient(135deg, #221d30 0%, #5b4b8a 100%);
+  padding: 20px;
 }
 
 .login-card {
   display: flex;
-  width: 900px;
-  max-width: 95%;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: min(980px, 96vw);
+  min-height: 560px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
   overflow: hidden;
-  min-height: 550px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* Bahagian Kiri */
 .login-form-section {
-  flex: 1;
+  flex: 1 1 50%;
   padding: 40px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-color: #ffffff;
 }
 
 .app-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 2rem;
+  font-size: clamp(2rem, 2.8vw, 2.8rem);
+  font-weight: 800;
+  color: #221d30;
+  margin-bottom: 1.2rem;
   letter-spacing: -1px;
 }
 
+.app-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 3px;
+  border-radius: 4px;
+  margin-top: 10px;
+  background: #5b4b8a;
+}
+
 .form-heading {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 1.5rem;
+  font-size: clamp(1.7rem, 2.2vw, 2rem);
+  font-weight: 800;
+  color: #221d30;
+  margin-bottom: 1rem;
 }
 
 .input-group {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .input-group label {
   display: block;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+  font-size: 0.84rem;
+  color: #5e5b70;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .input-group input {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #000;
-  border-radius: 30px; /* Sudut membulat penuh */
-  font-size: 1rem;
+  border: 1px solid #d7d4e8;
+  border-radius: 14px;
+  font-size: 0.96rem;
   outline: none;
-  transition: border-color 0.3s;
+  color: #221d30;
+  background-color: #fafafc;
+  transition: border-color 250ms ease, box-shadow 250ms ease, background 250ms ease;
+}
+
+.input-group input::placeholder {
+  color: #9a97a8;
 }
 
 .input-group input:focus {
   border-color: #5b4b8a;
+  box-shadow: 0 0 0 3px rgba(91, 75, 138, 0.14);
+  background-color: #ffffff;
 }
 
 .login-btn {
   width: 100%;
-  padding: 14px;
-  background-color: #5b4b8a; /* Ungu butang */
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #5b4b8a 0%, #392e69 100%);
   color: white;
   border: none;
-  border-radius: 30px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
   cursor: pointer;
   margin-top: 1rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 24px rgba(91,75,138,0.25);
+  transition: transform 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(91,75,138,0.34);
 }
 
 /* Bahagian Kanan */
 .login-illustration-section {
-  flex: 1;
-  background-color: #f0f4f8;
+  flex: 1 1 50%;
+  background: linear-gradient(135deg, #f6f2ff 0%, #d8d4f3 100%);
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   position: relative;
   overflow: hidden;
 }
@@ -104,50 +138,112 @@
   width: 100%;
   height: 100%;
   position: relative;
-  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  background:
+    linear-gradient(120deg, rgba(91,75,138,0.2) 0%, transparent 100%),
+    radial-gradient(circle at center, rgba(255,255,255,0.4), transparent 80%);
+  min-height: 560px;
+}
+
+.illustration-placeholder::before,
+.illustration-placeholder::after {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(91,75,138,0.2);
+}
+
+.illustration-placeholder::before {
+  left: -40px;
+  top: -30px;
+}
+
+.illustration-placeholder::after {
+  right: -50px;
+  bottom: -40px;
 }
 
 .rect {
   position: absolute;
-  background-color: #94a3b8;
-  border-radius: 4px;
-  opacity: 0.8;
+  background-color: rgba(91,75,138,0.65);
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  opacity: 0.86;
 }
 
-.rect-1 { top: 20px; left: 20px; width: 100px; height: 30px; }
-.rect-2 { top: 20px; right: 80px; width: 80px; height: 30px; }
-.rect-3 { top: 20px; right: 20px; width: 60px; height: 30px; }
+.rect-1 { top: 28px; left: 28px; width: 110px; height: 36px; }
+.rect-2 { top: 28px; right: 100px; width: 92px; height: 36px; }
+.rect-3 { top: 28px; right: 30px; width: 70px; height: 36px; }
 
 .counter {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
-  height: 40%;
-  background-color: #fbbf24; /* Warna kaunter oren */
-  border-radius: 8px 8px 0 0;
+  width: min(320px, 84%);
+  height: 46%;
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  border-radius: 16px 16px 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 -12px 22px rgba(0,0,0,0.12);
 }
 
 .cashier {
-  width: 60px;
-  height: 80px;
-  background-color: #94a3b8;
+  width: 74px;
+  height: 90px;
+  background: linear-gradient(180deg, #f8fafc, #94a3b8);
   border-radius: 50% 50% 0 0;
   position: absolute;
-  top: -40px;
+  top: -44px;
   left: 30%;
+  border: 3px solid #ffffff;
 }
 
 .monitor {
-  width: 80px;
-  height: 50px;
-  background-color: #475569;
+  width: 92px;
+  height: 58px;
+  background: linear-gradient(135deg, #475569, #1f2937);
   position: absolute;
-  top: -10px;
-  right: 20%;
-  border-radius: 4px;
+  top: -12px;
+  right: 22%;
+  border-radius: 8px;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 14px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 900px) {
+  .login-card {
+    flex-direction: column;
+  }
+
+  .login-form-section,
+  .login-illustration-section {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .login-illustration-section {
+    min-height: 260px;
+  }
+
+  .illustration-placeholder {
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-container {
+    padding: 14px;
+  }
+
+  .login-card {
+    min-height: auto;
+  }
+
+  .login-form-section {
+    padding: 26px 26px;
+  }
 }

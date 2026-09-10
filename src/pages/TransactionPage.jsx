@@ -5,65 +5,32 @@ import ReceiptModal from '../component/ReceiptModal'; // Import komponen resit
 import SearchBar from '../component/SearchBar';
 import Sidebar from '../component/Sidebar';
 import '../css/TransactionPage.css';
+import { useGetHistory,useGetHistoryInvoice } from '../hooks/useHistory';
 
 const TransactionsPage = () => {
-  // Data dummy berdasarkan dokumen API
-  const [transactions] = useState([
-    {
-      id: 1,
-      invoice_no: 'INV-260818-0001',
-      date: '29/01/2026',
-      cashier: 'Admin',
-      payment: 'Cash',
-      total: 12.00,
-      status: 'COMPLETED',
-      items: [
-        { name: 'Coca-Cola', price: 2.00, qty: 2 },
-        { name: 'Maggi', price: 2.00, qty: 2 },
-        { name: 'Biskut', price: 2.00, qty: 2 },
-      ]
-    },
-    {
-      id: 2,
-      invoice_no: 'INV-260818-0002',
-      date: '30/01/2026',
-      cashier: 'Cashier',
-      payment: 'QR',
-      total: 8.50,
-      status: 'COMPLETED',
-      items: [
-        { name: 'Minyak Masak', price: 7.50, qty: 1 },
-        { name: 'Gula', price: 1.00, qty: 1 },
-      ]
-    },
-    {
-      id: 3,
-      invoice_no: 'INV-260818-0003',
-      date: '31/01/2026',
-      cashier: 'Admin',
-      payment: 'Cash',
-      total: 20.00,
-      status: 'VOID',
-      items: [{ name: 'Maggi', price: 2.00, qty: 10 }]
-    }
-  ]);
+ 
+  const {data:transactions,isLoading:isHistory, isError:isHisErr} = useGetHistory();
+  const [saleId, setSaleId] = useState(null);
+  const {data:invoice,isLoading:isInvoice,isError:isInvoiceErr} = useGetHistoryInvoice(saleId);
 
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [search, setSearch] = useState('');
 
-  const filteredTransactions = transactions.filter((transaction) => {
+  const filteredTransactions = transactions?.filter((transaction) => {
     const searchValue = search.toLowerCase();
-    return transaction.invoice_no.toLowerCase().includes(searchValue)
-      || transaction.cashier.toLowerCase().includes(searchValue)
-      || transaction.payment.toLowerCase().includes(searchValue)
-      || transaction.status.toLowerCase().includes(searchValue);
+    return transaction?.invoice_number?.toLowerCase().includes(searchValue)
+      || transaction?.cashier?.toLowerCase().includes(searchValue)
+      || transaction?.payment_method?.toLowerCase().includes(searchValue)
+      || transaction?.status?.toLowerCase().includes(searchValue);
   });
 
-  const openReceipt = (invoice) => {
+  const openReceipt = (saleId) => {
+    setSaleId(saleId);
     setSelectedInvoice(invoice);
   };
 
   const closeReceipt = () => {
+    setSaleId(null);
     setSelectedInvoice(null);
   };
 
@@ -94,26 +61,36 @@ const TransactionsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredTransactions.map((txn, index) => (
+            {isHistory?(
+                 <tr>
+                  <td colSpan="9" style={{ textAlign: 'center' }}>Loading...</td>
+                </tr>
+              ) : filteredTransactions?.length === 0 ? (
+                <tr>
+                  <td colSpan="9" style={{ textAlign: 'center' }}>No products found</td>
+                </tr>
+              ) :
+            
+            filteredTransactions?.map((txn, index) => (
               <motion.tr 
-                key={txn.id} 
+                key={index} 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
               >
                 <td>{index + 1}</td>
-                <td>{txn.invoice_no}</td>
-                <td>{txn.date}</td>
-                <td>{txn.cashier}</td>
-                <td>{txn.payment}</td>
-                <td>RM{txn.total.toFixed(2)}</td>
-                <td className={`status-${txn.status.toLowerCase()}`}>{txn.status}</td>
+                <td>{txn?.invoice_number}</td>
+                <td>{txn?.created_at}</td>
+                <td>{txn?.cashier}</td>
+                <td>{txn?.payment_method}</td>
+                <td>RM{txn?.grand_total}</td>
+                <td className={`status-${txn?.status?.toLowerCase()}`}>{txn?.status}</td>
                 <td className="action-cell">
                   <motion.button 
                     className="icon-btn"
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => openReceipt(txn)}
+                    onClick={() => openReceipt(txn?.id)}
                     title="Lihat Resit"
                   >
                     <Icon icon="mdi:eye" />
@@ -127,6 +104,7 @@ const TransactionsPage = () => {
                   </motion.button>
                 </td>
               </motion.tr>
+
             ))}
           </tbody>
         </table>

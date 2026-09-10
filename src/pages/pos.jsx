@@ -33,6 +33,7 @@ const PosPage = () => {
   // Data cart dummy
   const [cartItems,setCartItems] = useState([]);
 
+
   //fungsi addtocart
  const addToCart = (product) => {
     const existingItem = cartItems.find(item => item.id === product.id);
@@ -46,6 +47,10 @@ const PosPage = () => {
       setCartItems([...cartItems, { ...product, qty: 1 }]);
     }
   };
+
+  const removeFromCart = (productId) => {
+    setCartItems(cartItems.filter(item => item.id !== productId));
+  }
 
   
 
@@ -242,14 +247,14 @@ const [paymentMethod, setPaymentMethod] = useState('CASH');
                 <td className="col-price">{item?.sell_price}</td>
                 <td className="col-qty">{item?.qty}</td>
                 <td className="col-subtotal">{(item?.sell_price * item?.qty).toFixed(2)}</td>
-                <td className="col-action"><Icon icon="mdi:trash"/></td>
+                <td onClick={()=>removeFromCart(item.id)} className="col-action"><Icon icon="mdi:trash"/></td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="table-footer">
-          <span>Clear Cart <Icon icon="mdi:trash"/></span>
+          <span>Clear Cart <Icon onClick={() => setCartItems([])} icon="mdi:trash"/></span>
           <span>Total Item:{cartItems?.length}</span>
         </div>
 

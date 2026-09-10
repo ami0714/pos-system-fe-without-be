@@ -6,8 +6,10 @@ import SearchBar from '../component/SearchBar'
 import { Icon } from '@iconify/react';
 import {useCategory} from '../hooks/useCategory'
 import {useProducts} from '../hooks/useProduct'
+import {useNavigate} from 'react-router-dom'
 
 const ProductListPage = () => {
+  const navigate = useNavigate();
   const [categoryId, setCategoryId] = useState(5);
     const [stockFilter, setStockFilter] = useState('ALL');
   const { data: category, isLoading, isError, error } = useCategory();
@@ -54,6 +56,7 @@ const ProductListPage = () => {
           className="add-product-btn"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/productForm')}
         >
           add Product
         </motion.button>
@@ -134,7 +137,7 @@ const ProductListPage = () => {
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
                   >
-                    <Icon icon="cuida:edit-outline" />
+                    <Icon onClick={() => navigate(`/productForm/${product?.barcode}`)} icon="cuida:edit-outline" />
                   </motion.button>
                   <motion.button 
                     className="icon-btn"

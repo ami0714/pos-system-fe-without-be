@@ -12,12 +12,19 @@
   z-index: 1000;
 }
 
+.receipt-modal-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
 .receipt-card {
   background: white;
   border: 1px solid #ddd;
   border-radius: 0;
   width: 400px;
-  padding: 30px;
+  padding: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
@@ -37,14 +44,14 @@
 .receipt-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .receipt-table th,
 .receipt-table td {
   border-bottom: 1px solid #ccc;
-  padding: 8px;
+  padding: 5px;
   font-size: 1rem;
   text-align: left;
 }
@@ -61,7 +68,7 @@
   border-bottom: 2px solid black;
   padding: 15px 0;
   margin-bottom: 10px;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 800;
 }
 
@@ -78,10 +85,16 @@
   color: white;
   font-size: 1.5rem;
   font-weight: 700;
-  padding: 15px 60px;
+  padding: 5px 40px;
   border: none;
   border-radius: 30px;
   cursor: pointer;
   display: block;
   margin: 0 auto;
+  min-width: 180px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.print-btn:hover {
+  background-color: #463b6b;
 }

@@ -1,5 +1,5 @@
-import {useQuery} from '@tanstack/react-query';
-import {getProdukLog} from '../api/stockApi'
+import {useMutation, useQuery,useQueryClient} from '@tanstack/react-query';
+import {getProdukLog,stockMovement} from '../api/stockApi'
 
 
 
@@ -13,4 +13,22 @@ export function useStock(type,start,end) {
     });
 
 }
+
+
+export function useStockMovement() { 
+const queryClient = useQueryClient();
+
+    return useMutation({
+         mutationFn: async ({payload,type,productId}) => {
+            const response = await stockMovement(payload,type,productId);
+            return response;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['stock-movement'] });
+        }
+    })
+    
+}
+
+
 

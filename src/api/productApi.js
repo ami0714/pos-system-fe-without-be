@@ -1,4 +1,4 @@
-import {get } from '../utils/apiHelper';
+import {get,post,put } from '../utils/apiHelper';
 
 
 export async function getProducts(catId,stockStatus){
@@ -28,4 +28,25 @@ export async function getProductsByBarcode(barcode){
     }
     throw new Error(response.message || 'Product not found')
 }
+
+export async function addProduct(payload){
+    const response = await post('/products/add',payload)
+
+    if(response.status == true){
+        return response.message
+    }
+    throw new Error("err add product");
+    
+}
+
+export async function editProduct(payload,productId){
+    const response = await put(`/products/edit/${productId}`,payload)
+
+    if(response.status == true){
+        return response.message
+    }
+    throw new Error("err update product");
+    
+}
+
 

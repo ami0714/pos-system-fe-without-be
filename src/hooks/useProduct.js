@@ -1,5 +1,5 @@
-import {useQuery} from '@tanstack/react-query';
-import {getProducts,getProductsByBarcode} from '../api/productApi'
+import {useQuery,useMutation,useQueryClient} from '@tanstack/react-query';
+import {getProducts,getProductsByBarcode,addProduct,editProduct} from '../api/productApi'
 
 
 export function useProducts(categoryId,stockStatus) {
@@ -22,4 +22,33 @@ export function useProductsByBarcode(barcode) {
     staleTime: 60000,
     });
 
+}
+
+export function useAddproduct(){
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({payload})=>{
+                   const response = await addProduct(payload);
+                   return response
+        },
+       onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['addProduct'] });
+        }
+    })
+}
+
+
+export function useEditproduct(){
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({payload,productId})=>{
+                   const response = await editProduct(payload,productId);
+                   return response
+        },
+       onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['editProduct'] });
+        }
+    })
 }

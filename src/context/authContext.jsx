@@ -5,6 +5,9 @@ import { post, get } from '../utils/apiHelper';
 const AuthContext = createContext();
 
 export function useAuth() {
+  if(!AuthContext) {
+    throw new Error('useAuth must be used within an AuthContextProvider');
+  }
   return useContext(AuthContext);
 }
 

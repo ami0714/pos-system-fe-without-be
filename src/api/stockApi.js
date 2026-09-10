@@ -1,4 +1,4 @@
-import { get } from '../utils/apiHelper';
+import { get,post,put } from '../utils/apiHelper';
 
 export async function getProdukLog(type, start, end) {
   const params = new URLSearchParams();
@@ -35,3 +35,33 @@ export async function getProdukLog(type, start, end) {
     };
   }
 }
+
+export async function stockMovement(payload, type, productId) {
+
+  const url = type == 'IN' ?`/stock/in/${productId}?type=${type}` : `/stock/adjust/${productId}?type=${type}`;
+
+
+try{
+const response = await put(url, payload);
+  if (response?.status === true) {
+    return response.message || 'Stock movement successful';
+  }
+
+  return {
+    message: response?.message || 'Gagal melakukan stock movement',
+    status: false
+  };
+
+
+}catch(error){
+  return {
+    message: error.message || 'Terjadi kesalahan pada server',
+    status: false
+  };
+
+}
+
+}
+
+
+
